@@ -14,12 +14,13 @@ connectDB();
 app.use('/', productsRouter)
 app.use('/', orderRouter)
 
-if(process.env.NODE_ENV === 'production') {
-    app.use('/', express.static('public'))
-    app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'))
-} else {
-    app.get('/', (req, res) => res.send('API Running'))
-}
+// if(process.env.NODE_ENV === 'production') {
+//     app.use('/', express.static('public'))
+//     app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'))
+// } else {
+//     app.get('/', (req, res) => res.send('API Running'))
+// }
+
 
 let PORT = process.env.PORT
 app.listen(PORT || 5002, () => {

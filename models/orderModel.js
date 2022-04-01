@@ -1,7 +1,17 @@
-let mongoose = require('mongoose')
-const orderSchema = require('../schema/orderSchema')
+import { Schema, model } from 'mongoose'
 
-let Order = mongoose.model('Order', orderSchema)
+const orderSchema = Schema(
+  {
+    user_id: mongoose.Schema.Types.ObjectId,
+    name: String,
+    email: String,
+    orderInfo: [{ title: String, quantity: String }],
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = Order;
+const Order = model("Order", orderSchema);
 
+export default Order;
