@@ -1,20 +1,33 @@
-const productModel = require("../models/productModel");
-const orderModel = require("../models/orderModel");
+const User = require("../models/userModel");
 
 class UserService {
 
-    async getOrdersForUser(id) {
-        return await orderModel.find({ user_id: id });
-    }
+  signup = async (userData) => {
+    return await User.create(userData);
+  };
 
-    async getProductsForUser(id) {
-        return await productModel.find({ user_id: id });
-    }
+  getUsres = async () => {
+    return await User.find();
+  }
 
-    async deleteOrderForUser(userId, id) {
-        return await orderModel.deleteOne(id, { user_id: userId })
-    }
+  findUser = async (_id) => {
+    return await User.findById({ _id });
+  }
+
+  updateUser = async (id, newInformation) => {
+    return await User.findByIdAndUpdate(id, newInformation, { new: true })
+  }
+
+  deleteUser = async (_id) => {
+    return await User.deleteOne({ _id });
+  }
+
+  changePasswordForUser = async (id, newPassword) => {
+    return await User.findByIdAndUpdate(id, { password: newPassword }, { new: true });
+  }
+
+  login = async () => { };
 
 }
 
-export default UserService;
+module.exports = UserService;

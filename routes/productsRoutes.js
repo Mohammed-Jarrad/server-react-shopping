@@ -1,21 +1,13 @@
-let express = require('express');
-const Product = require('../models/productModel');
-let router = express.Router();
+const express = require("express");
+const router = express.Router();
+const productController = require('../controller/productController')
 
+router.get('/products', productController.getProducts);
+router.get('/product/:id', productController.findProduct);
+router.get('/products/user', productController.getProductsForUser);
+router.get('/products/:category', productController.getProductsByCategory);
+router.put('/product/:id', productController.updateProduct);
+router.post('/product', productController.createProduct);
+router.delete('/product/:id', productController.deleteProduct);
 
-router.get('/api/products', async (req, res) => {
-    let products = await Product.find()
-    res.send(products) 
-})
-
-router.post('/api/products', async (req, res) => {
-    let newProduct = new Product(req.body).save()
-    res.send(newProduct)
-})
-
-router.delete('/api/products/:id', async (req, res) => {
-    let deletedProduct = await Product.findByIdAndDelete(req.params.id)
-    res.send(deletedProduct)
-})
-
-module.exports = router
+module.exports = router;

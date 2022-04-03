@@ -1,5 +1,4 @@
-// const orderModel = require("../models/orderModel");
-import Order from "../models/orderModel";
+const Order = require("../models/orderModel");
 
 class OrderService {
 
@@ -29,4 +28,4 @@ class OrderService {
 
 }
 
-export default OrderService;
+module.exports = OrderService;

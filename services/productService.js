@@ -1,4 +1,4 @@
-import Product from "../models/productModel";
+const Product = require('../models/productModel')
 
 class ProductService {
 
@@ -14,6 +14,10 @@ class ProductService {
         return await Product.find({ user_id: id });
     }
 
+    async getProductsByCategory(category_name) {
+        return await Product.find({ category: new RegExp(category_name, "i") });
+    }
+
     async updateProduct(id, newProduct) {
         return await Product.findByIdAndUpdate(id, newProduct, { new: true });
     }
@@ -23,9 +27,9 @@ class ProductService {
     }
 
     async deleteProduct(_id) {
-        return await Product.deleteOne(_id);
+        return await Product.deleteOne({ _id });
     }
 
 }
 
-export default ProductService;
+module.exports = ProductService;

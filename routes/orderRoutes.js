@@ -1,21 +1,13 @@
-let express = require('express')
-let router = express.Router()
-let Order = require('../models/orderModel')
+const express = require('express')
+const router = express.Router()
+const orderController = require('../controller/orderController')
 
-router.get('/api/orders', async (req, res) => {
-    let order = await Order.find()
-    res.send(order)
-})
-
-router.post('/api/orders', async (req, res) => {
-    let order = await new Order(req.body).save()
-    res.send(order)
-})
-
-router.delete('/api/orders/:id', async (req, res) => {
-    let deletedOrder = await Order.findByIdAndDelete(req.params.id)
-    res.send(deletedOrder)
-})
+router.get("/orders", orderController.getOrders);
+router.get("/orders/user", orderController.getOrdersForUser);
+router.get("/order/:id", orderController.findOrder);
+router.post("/order", orderController.createOrder);
+router.delete("/order/:id", orderController.deleteOrder);
+router.put("/order/:id", orderController.updateOrder);
 
 module.exports = router;
 

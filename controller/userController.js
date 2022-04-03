@@ -1,115 +1,82 @@
-// import UserService from '@services/userService';
-// import Logger from '@utils/logger';
-// import express, { Router } from 'express';
-// import jwt from '@utils/jwt';
-// import auth from '@middlewares/auth';
+const express = require("express");
+const UserService = require("../services/userService");
+const userService = new UserService();
 
-// class UserController {
-//     constructor(userService: UserService = new UserService()) {
-//         this.intiliazeRouter();
-//     }
-//     router = Router();
+const handleError = (e) => {
+    let errors = {};
+    // if error or pass not required as well
+    if (e.message.includes('User validation failed')) {
+        Object.values(e.errors).forEach(({ path, message }) => {
+            errors[path] = message;
+        })
+    }
+    // handle exists email in DB 
+    if (e.code === 11000) {
+        errors.email = 'this Email is Registered'
+    }
+    if (errors.password === '') errors.password = 'Validate Password';
+    return errors;
+}
 
-//     intiliazeRouter() {
-//         this.router.post('/user/login', this.login.bind(this));
-//         this.router.use(auth);
-//         this.router.get('/users', this.getUsers.bind(this));
-//         this.router.get('/user', this.findUser.bind(this));
-//         this.router.get('/user/contacts', this.getCareGiverContacts.bind(this));
-//         this.router.post('/user', this.createUser.bind(this));
-//         this.router.delete('/user', this.deleteUser.bind(this));
-//         this.router.put('/user', this.updateUser.bind(this));
-//     }
+module.exports.signup = async (req = express.request, res = express.response) => {
+    try {
+        const result = await userService.signup(req.body);
+        res.status(201).json(result);
+    } catch (e) {
+        const err = handleError(e);
+        (!err)
+            ? res.status(400).json(`Failed to Create User`)
+            : res.status(400).json(err);
+    }
+};
 
-//     async getUsers(req, res) {
-//         try {
-//             const result = await this.userService.findAll();
-//             res.status(200).json(result);
-//         } catch (e) {
-//             const err = faild to get all users, err: ${e.message};
-//             Logger.ERROR(err);
-//             res.status(400).json({ message: err });
-//         }
-//     }
+module.exports.getUsers = async (req = express.request, res = express.response) => {
+    try {
+        const result = await userService.getUsres();
+        res.status(200).json(result);
+    } catch (e) {
+        const err = `Failed to get Users, err: ${e}`;
+        res.status(400).json({ msg: err });
+    }
+};
 
-//     async getCareGiverContacts(req, res) {
-//         try {
-//             const result = await this.userService.getCareGiverContacts(req.params.userId);
-//             res.status(200).json({ contacts: result ? result : [] });
-//         } catch (e) {
-//             const err = faild to get all users, err: ${e.message};
-//             Logger.ERROR(err);
-//             res.status(400).json({ message: err });
-//         }
-//     }
+module.exports.updateUser = async (req = express.request, res = express.response) => {
+    try {
+        const result = await userService.updateUser(req.params.id, req.body);
+        res.status(200).json(result);
+    } catch (e) {
+        const err = `Failed to update this User with id: ${req.params.id}, err: ${e}`;
+        res.status(400).json({ msg: err });
+    }
+};
+module.exports.deleteUser = async (req = express.request, res = express.response) => {
+    try {
+        const result = await userService.deleteUser(req.params.id);
+        result.deletedCount != 0
+            ? res.status(202).end()
+            : res.status(400).json(`Failed to delete User`);
+    } catch (e) {
+        const err = `Failed to delete this User with id: ${req.params.id}, err: ${e}`;
+        res.status(400).json({ msg: err });
+    }
+};
 
-//     async findUser(req, res) {
-//         try {
-//             const result = await this.userService.findById(req.params.userId);
-//             res.status(200).json(result);
-//         } catch (e) {
-//             const err = faild to get user with id ${req.params.userId}, err" ${e.message};
-//             Logger.ERROR(err);
-//             res.status(400).json({ message: err });
-//         }
-//     }
+module.exports.changePassword = async (req = express.request, res = express.response) => {
+    try {
+        const result = await userService.changePasswordForUser(req.params.id, req.body.password);
+        res.status(200).json(`Password is Changed`)
+    } catch (e) {
+        const err = `Failed to Change Password to User with id: ${req.params.id}, err: ${e}`;
+        res.status(400).json({ msg: err });
+    }
+}
 
-//     async createUser(req, res) {
-//         try {
-//             const result = await this.userService.save(req.body);
-//             res.status(201).json(result);
-//         } catch (e) {
-//             const err = faild to create a new user, err" ${e.message};
-//             Logger.ERROR(err);
-//             res.status(404).json({ message: err });
-//         }
-//     }
-
-//     async deleteUser(req, res) {
-//         try {
-//             const result = await this.userService.delete(req.params.userId);
-//             result.deletedCount != 0
-//                 ? res.status(202).end()
-//                 : res.status(400).json('Faild to delete the user');
-//         } catch (e) {
-//             let err = Faild to delete Call with Id ${req.params.userId}, error: ${e.message};
-//             Logger.ERROR(err);
-//             res.status(400).json({ message: err });
-//         }
-//     }
-
-//     async updateUser(req, res) {
-//         try {
-//             const result = await this.userService.update(req.params.userId, req.body);
-//             res.status(200).json(result);
-//         } catch (e) {
-//             const err = faild to update user with id ${req.params.userId}, err" ${e.message};
-//             Logger.ERROR(err);
-//             res.status(404).json({ message: err });
-//         }
-//     }
-//     async login(req, res) {
-//         const { username } = req.body || null;
-//         if (!username) {
-//             return res.status(400).json({ msg: 'username is requierd in the body' });
-//         }
-//         try {
-//             const user = await this.userService.findUserByUserName(username);
-//             if (!user) {
-//                 const msg = the user with user name ${username} does not found;
-//                 Logger.ERROR(msg);
-//                 return res.status(404).json({ msg });
-//             }
-//             const token = jwt.createToken({ _id: user!._id });
-//             res.status(200).json({
-//                 token,
-//             });
-//         } catch (e) {
-//             const err = faild to login for user: ${username}, err" ${e.message};
-//             Logger.ERROR(err);
-//             res.status(404).json({ message: err });
-//         }
-//     }
-// }
-
-// export default UserController;
+module.exports.findUser = async (req = express.request, res = express.response) => {
+    try {
+        const result = await userService.findUser(req.params.id);
+        res.status(200).json(result)
+    } catch (e) {
+        const err = `Failed to Find User with id: ${req.params.id}, err: ${e}`;
+        res.status(400).json({ msg: err });
+    }
+}

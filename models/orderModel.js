@@ -1,12 +1,30 @@
-import { Schema, model } from 'mongoose'
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-const orderSchema = Schema(
+const orderSchema = new Schema(
   {
-    user_id: mongoose.Schema.Types.ObjectId,
-    name: String,
-    email: String,
-    orderInfo: [{ title: String, quantity: String }],
-  },
+    user_id: Schema.Types.ObjectId,
+    user_name: {
+      type: String,
+      required: true,
+    },
+    user_email: {
+      type: String,
+      required: true,
+    },
+    order_info: {
+      title: {
+        type: String,
+        required: true,
+      },
+      quantity: {
+        type: String,
+        required: true,
+      },
+    }
+  }
+  ,
   {
     timestamps: true,
   }
@@ -14,4 +32,4 @@ const orderSchema = Schema(
 
 const Order = model("Order", orderSchema);
 
-export default Order;
+module.exports = Order;
