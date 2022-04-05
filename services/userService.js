@@ -22,11 +22,7 @@ class UserService {
   };
 
   changePasswordForUser = async (id, newPassword) => {
-    return await User.findByIdAndUpdate(
-      id,
-      { password: newPassword },
-      { new: true }
-    );
+    return await User.findByIdAndUpdate(id, { password: newPassword }, { new: true });
   };
 
   login = async (email, password) => {

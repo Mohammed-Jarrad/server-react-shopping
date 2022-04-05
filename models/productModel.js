@@ -1,9 +1,12 @@
-const mongoose = require('mongoose')
+const express = require('express');
+const res = require('express/lib/response');
+const mongoose = require('mongoose');
+// const User = require('./userModel');
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 const productSchema = new Schema({
-  user_id: Schema.Types.ObjectId,
+
   title: {
     type: String,
     required: true
@@ -21,11 +24,15 @@ const productSchema = new Schema({
     type: Number,
     required: true
   },
-  sizes: [String],
+  sizes: {
+    type: [String],
+    required: true,
+  },
   category: {
     type: String,
     required: true
   }
+
 });
 
 const Product = model("Product", productSchema);

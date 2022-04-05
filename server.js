@@ -8,11 +8,13 @@ require("dotenv").config();
 const userRouter = require("./routes/userRouter");
 const cookieParser = require("cookie-parser");
 const { authRequest } = require('./Middleware/authMiddleware')
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(cors());
 
 // Connection Database
 connectDB();
@@ -21,7 +23,6 @@ connectDB();
 app.use("/", productsRouter);
 app.use("/", orderRouter);
 app.use("/", userRouter);
-app.get('/main', authRequest)
 
 
 // Listen
