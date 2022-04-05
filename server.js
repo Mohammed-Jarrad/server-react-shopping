@@ -5,20 +5,26 @@ const productsRouter = require("./routes/productsRoutes");
 const orderRouter = require("./routes/orderRoutes");
 const connectDB = require("./config/db");
 require("dotenv").config();
-const userRouter = require('./routes/userRouter');
+const userRouter = require("./routes/userRouter");
+const cookieParser = require("cookie-parser");
+const { authRequest } = require('./Middleware/authMiddleware')
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
-// Connect DB
+// Connection Database
 connectDB();
 
+//Routes
 app.use("/", productsRouter);
 app.use("/", orderRouter);
-app.use("/", userRouter)
+app.use("/", userRouter);
+app.get('/main', authRequest)
 
 
+// Listen
 const PORT = process.env.PORT;
 app.listen(PORT || 5002, () => console.log(`Server Running on port ${PORT}`));
 

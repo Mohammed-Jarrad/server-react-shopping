@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const productController = require('../controller/productController')
+const productController = require('../controller/productController');
+const { authRequest } = require("../Middleware/authMiddleware");
 
-router.get('/products', productController.getProducts);
+router.get('/products', authRequest, productController.getProducts);
 router.get('/product/:id', productController.findProduct);
 router.get('/products/user', productController.getProductsForUser);
 router.get('/products/:category', productController.getProductsByCategory);
