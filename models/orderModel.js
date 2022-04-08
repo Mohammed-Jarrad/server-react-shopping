@@ -1,23 +1,46 @@
 const mongoose = require("mongoose");
+const { required } = require("nodemon/lib/config");
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 const orderSchema = new Schema(
   {
-    
+
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    title: {
-      type: String,
-      required: true,
-    },
-    quantity: {
-      type: String,
-      required: true,
-    },
+    order_info: [{
+      product: {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      }, quantity: {
+        type: Number,
+        required: true
+      }
+    }]
+
+    // [
+    //   // {
+    //   //   product_id: String,
+    //   //   title: {
+    //   //     type: String,
+    //   //     required: true,
+    //   //   },
+    //   //   quantity: {
+    //   //     type: String,
+    //   //     required: true,
+    //   //   },
+    //   // }
+    //   {
+    //     product: {
+    //       type: Schema.Types.ObjectId,
+    //       ref: "Product"
+    //     }
+    //   }
+    // ]
 
   },
   {

@@ -7,11 +7,10 @@ router.post("/signup", userController.signup); // done
 router.post("/login", userController.login); // done 
 router.get('/logout', userController.logout) // done 
 
-router.use(authRequest)
-router.get("/users", userController.getUsers); // done
-router.put("/user", userController.updateUser); // done
-router.put("/user/reset/password", userController.changePassword); // done
-router.delete("/user", userController.deleteUser); // done
-router.get("/user", userController.findUser); // done
+router.get("/users", authRequest, userController.getUsers); // done
+router.put("/user", authRequest, userController.updateUser); // done
+router.put("/user/reset/password", authRequest, userController.changePassword); // done
+router.delete("/user", authRequest, userController.deleteUser); // done
+router.get("/user", authRequest, userController.findUser); // done
 
 module.exports = router;

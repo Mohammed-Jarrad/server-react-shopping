@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+// const router = express.Router();
 const bodyParser = require("body-parser");
 const productsRouter = require("./routes/productsRoutes");
 const orderRouter = require("./routes/orderRoutes");
@@ -7,8 +7,8 @@ const connectDB = require("./config/db");
 require("dotenv").config();
 const userRouter = require("./routes/userRouter");
 const cookieParser = require("cookie-parser");
-const { authRequest } = require('./Middleware/authMiddleware')
-const cors = require('cors');
+const { authRequest } = require("./Middleware/authMiddleware");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
@@ -23,7 +23,6 @@ connectDB();
 app.use("/", productsRouter);
 app.use("/", orderRouter);
 app.use("/", userRouter);
-
 
 // Listen
 const PORT = process.env.PORT;

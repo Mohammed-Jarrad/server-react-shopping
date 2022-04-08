@@ -10,12 +10,11 @@ class OrderService {
         return await Order.findById(id).populate("user");
     }
 
-    async updateById(id, newOrder) {
+    async updateById(id, newOrder) { // {_id, FormValues}
         return await Order.findByIdAndUpdate(id, newOrder, { new: true }).populate("user");
     }
 
-    async createOrder(newOrder) {
-        console.log(newOrder)
+    async createOrder(newOrder) { // newOrder: {...req.body, user: res.locals.userID}
         return await Order.create(newOrder);
     }
 
@@ -24,7 +23,14 @@ class OrderService {
     }
 
     async getOrdersForUser(user) {
-        return await Order.find({ user }).populate("user");
+        return await Order.find({ user })
+            .populate("user")
+            .populate({
+                path: "order_info",
+                populate: {
+                    path: "product",
+                }
+            });
     }
 }
 

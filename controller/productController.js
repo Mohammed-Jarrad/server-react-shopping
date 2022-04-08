@@ -1,13 +1,13 @@
 const express = require('express')
-const Router = express.Router;
+// const Router = express.Router;
 const ProductService = require('../services/productService')
 const productService = new ProductService()
 
 
 module.exports.getProducts = async (req = express.request, res = express.response) => {
     try {
-        const result = await productService.getProducts();
-        res.status(200).json(result);
+        const products = await productService.getProducts();
+        res.status(200).json({ products });
     } catch (e) {
         const errors = `Failed to get all Products, err: ${e}`;
         res.status(400).json({ errors })
@@ -16,30 +16,34 @@ module.exports.getProducts = async (req = express.request, res = express.respons
 
 module.exports.findProduct = async (req = express.request, res = express.response) => {
     try {
-        const result = await productService.findProduct(req.params.id);
-        res.status(200).json(result);
+        const product = await productService.findProduct(req.params.id);
+        res.status(200).json({ product });
     } catch (e) {
         const errors = `Failed to Find Product with id ${req.params.id}, err: ${e}`;
         res.status(400).json({ errors });
     }
 }
 
-// module.exports.getProductsForUser = async (req = express.request, res = express.response) => {
-//     try {
-//         const result = await productService.getProductsForUser(req.params.userId);
-//         res.status(200).json(result);
-//     } catch (e) {
-//         const err = `Failed to Find Products to the User with id ${req.params.userId}, err: ${e}`;
-//         res.status(400).json({ message: err });
-//     }
-// }
-
 module.exports.getProductsByCategory = async (req = express.request, res = express.response) => {
     try {
-        const result = await productService.getProductsByCategory(req.params.category);
-        res.status(200).json(result);
+        const products = await productService.getProductsByCategory(req.params.category);
+        res.status(200).json({ products });
     } catch (e) {
-        const errors = `Failed to Find Products to ${req.params.category} Category, err: ${e}`;
+        const errors = `Failed to Find Products with ${req.params.category} Category, err: ${e}`;
+        res.status(400).json({ errors });
+    }
+}
+
+module.exports.getAllCategories = async (req = express.request, res = express.response) => {
+    try {
+        const products = await productService.getAllCategories();
+        const categories = products.map(product => product.category);
+        const categoriesWithoutDuplicate = categories.filter((category, index, arr) => {
+            return arr.indexOf(category) === index;
+        });
+        res.status(200).json({ categories: categoriesWithoutDuplicate });
+    } catch (e) {
+        const errors = `Faild to get All Categories For Products, error: ${e}`;
         res.status(400).json({ errors });
     }
 }
@@ -54,7 +58,7 @@ module.exports.updateProduct = async (req = express.request, res = express.respo
     }
 }
 
-const handleError = (e) => {
+function handleError(e) {
     let errors = {};
 
     if (e.message.includes('Product validation failed')) {
@@ -63,8 +67,8 @@ const handleError = (e) => {
         })
     }
 
-    if (e.code === 11000) {
-        errors.imageUrl = 'this Image is exists please Change it'
+    if (e.code === 11000) { // for exists image
+        errors.imageUrl = 'this image is exists please change it'
     }
 
     return errors;
@@ -72,13 +76,15 @@ const handleError = (e) => {
 
 module.exports.createProduct = async (req = express.request, res = express.response) => {
     try {
-        const result = await productService.createProduct(req.body);
-        res.status(201).json(result);
+        const product = await productService.createProduct(req.body);
+        res.status(201).json({ product });
     } catch (e) {
         const errors = handleError(e);
-        (!Object.keys(errors).length)
-            ? res.status(400).json(`Failed to Create new Product, err: ${e}`)
-            : res.status(400).json({ errors });
+        if (errors === {}) {
+            res.status(400).json({ error: e.message })
+        } else {
+            res.status(400).json({ errors });
+        }
     }
 }
 
@@ -89,7 +95,7 @@ module.exports.deleteProduct = async (req = express.request, res = express.respo
             ? res.status(202).json(`Deleted Success`)
             : res.status(400).json(`Failed to delete Product with id ${req.params.id}`)
     } catch (e) {
-        const err = `Failed to Delete the Product with id: ${req.params.id}, err: ${e}`;
-        res.status(400).json({ message: err });
+        const errors = `Failed to Delete the Product with id: ${req.params.id}, err: ${e}`;
+        res.status(400).json({ errors });
     }
 }

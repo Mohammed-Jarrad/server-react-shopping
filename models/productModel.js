@@ -9,28 +9,27 @@ const productSchema = new Schema({
 
   title: {
     type: String,
-    required: true
+    required: [true, "Set Product Title"]
   },
   imageUrl: {
     type: String,
-    required: true,
+    required: [true, "Set Product Image"],
     unique: true
   },
   desc: {
     type: String,
-    required: true
+    required: [true, "Set Product Description"]
   },
   price: {
     type: Number,
-    required: true
+    required: [true, "Set Product Price"]
   },
   sizes: {
     type: [String],
-    required: true,
   },
   category: {
     type: String,
-    required: true
+    required: [true, "Set Product Category"]
   }
 
 });

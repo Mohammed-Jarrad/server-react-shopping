@@ -1,39 +1,30 @@
-const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 
-// Check Auth Request
-// module.exports.authRequest = (req = express.request, res = express.response, next) => {
-//     let token = req.cookies.jwt;
-//     if (token) {
-//         try {
-//             const JWT = jwt.verify(token, "mohammed jarrad secret");
-//             if (JWT) {
-//                 res.locals.userID = JWT.user._id;
-//                 console.log(res.locals.userID)
-//             } else {
-//                 res.locals.userID = null;
-//                 return next();
-//             }
-//         } catch (e) {
-//             res.locals.userID = null;
-//             return res.status(401).json(e.message);
-//         }
-//     }
-//     res.status(400).json(`The Token is Not Found`);
-// };
 module.exports.authRequest = (req = express.request, res = express.response, next) => {
-    let token = req.cookies.jwt;
+    // ! bearer token
+    // const bearerToken = req.header('Authorization');
+    // if (bearerToken) {
+    //     try {
+    //         const token = bearerToken.split(' ')[1];
+    //         const DECODE_JWT = jwt.verify(token, 'mohammed jarrad secret');
+    //         res.locals.userID = DECODE_JWT.user._id;
+    //         return next();
+    //     } catch (error) {
+    //         return res.status(401).json({ error });
+    //     }
+    // } else res.status(401).json({ errors: "Token Not Found" });
+
+    // ! the simple token ('x-auth-token')
+    let token = req.header('x-auth-token');
+    console.log(req.headers)
     if (token) {
         try {
-            const JWT = jwt.verify(token, "mohammed jarrad secret");
-            res.locals.userID = JWT.user._id;
-            console.log("JWT", JWT)
+            const DECODE_JWT = jwt.verify(token, "mohammed jarrad secret");
+            res.locals.userID = DECODE_JWT.user._id;
             return next();
         } catch (e) {
-            console.log("Error", e.message)
-            return res.status(401).json(e.message);
+            return res.status(401).json({ errors: e });
         }
-    }
-    res.status(401).json(`The Token is Not Found`);
+    } else res.status(401).json(`The Token is Not Found`);
 };

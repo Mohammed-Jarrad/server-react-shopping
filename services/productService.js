@@ -1,8 +1,7 @@
-const express = require('express');
-const Product = require('../models/productModel')
+const express = require("express");
+const Product = require("../models/productModel");
 
 class ProductService {
-
     async getProducts() {
         return await Product.find();
     }
@@ -24,7 +23,6 @@ class ProductService {
     }
 
     async createProduct(newProduct) {
-        // newProduct["user"] = express.response.locals.userId;
         return await Product.create(newProduct);
     }
 
@@ -32,6 +30,9 @@ class ProductService {
         return await Product.deleteOne({ _id });
     }
 
+    async getAllCategories() {
+        return await Product.find(); // we need to git Category from this output
+    }
 }
 
 module.exports = ProductService;
