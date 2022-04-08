@@ -17,7 +17,7 @@ module.exports.authRequest = (req = express.request, res = express.response, nex
 
     // ! the simple token ('x-auth-token')
     let token = req.header('x-auth-token');
-    console.log(req.headers)
+    // console.log(req.headers)
     if (token) {
         try {
             const DECODE_JWT = jwt.verify(token, "mohammed jarrad secret");

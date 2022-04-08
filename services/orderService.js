@@ -7,7 +7,14 @@ class OrderService {
     }
 
     async findById(id) {
-        return await Order.findById(id).populate("user");
+        return await Order.findById(id)
+            .populate("user")
+            .populate({
+                path: "order_info",
+                populate: {
+                    path: "product"
+                }
+            });
     }
 
     async updateById(id, newOrder) { // {_id, FormValues}
