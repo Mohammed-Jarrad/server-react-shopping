@@ -40,6 +40,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Set Your Phone Number"],
   },
+  user_image: {
+    type: String,
+  }
 });
 
 // userSchema.virtual('full_name').get(() => `${this.name.first_name} ${this.name.last_name}`);

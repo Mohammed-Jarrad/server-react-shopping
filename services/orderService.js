@@ -1,4 +1,3 @@
-const express = require("express");
 const Order = require("../models/orderModel");
 
 class OrderService {
@@ -27,6 +26,12 @@ class OrderService {
 
     async deleteOrder(_id) {
         return await Order.deleteOne({ _id });
+    }
+
+    async deleteOrderWhenProductDeleted(product_id) {
+        return await Order.deleteMany({
+            "order_info.product._id": product_id
+        });
     }
 
     async getOrdersForUser(user) {

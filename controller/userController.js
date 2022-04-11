@@ -2,17 +2,18 @@ const express = require("express");
 const UserService = require("../services/userService");
 const userService = new UserService();
 const jwt = require("jsonwebtoken");
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { cloudinary } = require("../utils/cloudinary");
 
 const handleError = (err) => {
     let errors = {};
     // incorrect email
     if (err.message.includes("Incorrect Email")) {
-        errors["email"] = "Your Email is Not Found";
+        errors["email"] = "your email is not found";
     }
-    // incorrect email
+    // incorrect password
     if (err.message.includes("Incorrect Password")) {
-        errors["password"] = "Your Password is Incorrect";
+        errors["password"] = "your password incorrect";
     }
     // handle exists email in DB
     if (err.code === 11000) {
@@ -34,14 +35,19 @@ const createToken = (user) => {
     });
 };
 
-// Main Methods
+// ! Main Methods
 
 module.exports.signup = async (req = express.request, res = express.response) => {
     try {
-        const user = await userService.createUser(req.body);
+        const user_image = req.body.user_image;
+        const uploadedImage = await cloudinary.uploader.upload(user_image, {
+            upload_preset: "image_user",
+        });
+        const user = await userService.createUser({
+            ...req.body,
+            user_image: uploadedImage.public_id,
+        });
         const token = createToken(user);
-        // res.cookie("jwt", token, { maxAge: 24 * 60 * 60 * 3000 }); // 3 days
-
         res.status(201).json({ token, user });
     } catch (err) {
         const errors = handleError(err);

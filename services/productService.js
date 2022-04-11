@@ -10,10 +10,6 @@ class ProductService {
         return await Product.findById({ _id });
     }
 
-    // async getProductsForUser(id) {
-    //     return await Product.find({ user_id: id });
-    // }
-
     async getProductsByCategory(category_name) {
         return await Product.find({ category: new RegExp(category_name, "i") });
     }

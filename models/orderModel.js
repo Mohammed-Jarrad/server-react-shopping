@@ -11,37 +11,19 @@ const orderSchema = new Schema(
       ref: "User",
       required: true,
     },
-    order_info: [{
-      product: {
-        type: Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      }, quantity: {
-        type: Number,
-        required: true
-      }
-    }]
-
-    // [
-    //   // {
-    //   //   product_id: String,
-    //   //   title: {
-    //   //     type: String,
-    //   //     required: true,
-    //   //   },
-    //   //   quantity: {
-    //   //     type: String,
-    //   //     required: true,
-    //   //   },
-    //   // }
-    //   {
-    //     product: {
-    //       type: Schema.Types.ObjectId,
-    //       ref: "Product"
-    //     }
-    //   }
-    // ]
-
+    order_info:
+      [
+        {
+          product: {
+            type: Schema.Types.ObjectId,
+            ref: "Product",
+            required: true,
+          }, quantity: {
+            type: Number,
+            required: true
+          }
+        }
+      ]
   },
   {
     timestamps: true,

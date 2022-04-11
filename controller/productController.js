@@ -1,7 +1,7 @@
-const express = require('express')
-// const Router = express.Router;
-const ProductService = require('../services/productService')
-const productService = new ProductService()
+const express = require('express');
+const ProductService = require('../services/productService');
+const productService = new ProductService();
+const { cloudinary } = require('../utils/cloudinary');
 
 
 module.exports.getProducts = async (req = express.request, res = express.response) => {
@@ -61,7 +61,7 @@ module.exports.updateProduct = async (req = express.request, res = express.respo
 function handleError(e) {
     let errors = {};
 
-    if (e.message.includes('Product validation failed')) {
+    if (e.message && e.message.includes('Product validation failed')) {
         Object.values(e.errors).forEach(({ path, message }) => {
             errors[path] = message;
         })
@@ -76,12 +76,20 @@ function handleError(e) {
 
 module.exports.createProduct = async (req = express.request, res = express.response) => {
     try {
-        const product = await productService.createProduct(req.body);
+        const imageUrl = req.body.imageUrl;
+        const uploadedImage = await cloudinary.uploader.upload(imageUrl, {
+            upload_preset: 'image_product'
+        })
+        const product = await productService.createProduct({
+            ...req.body,
+            imageUrl: uploadedImage.public_id
+        });
         res.status(201).json({ product });
     } catch (e) {
         const errors = handleError(e);
-        if (errors === {}) {
-            res.status(400).json({ error: e.message })
+        console.log(e)
+        if (!errors) {
+            res.status(400).json({ errors: e })
         } else {
             res.status(400).json({ errors });
         }

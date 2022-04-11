@@ -2,8 +2,9 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 
 module.exports.authRequest = (req = express.request, res = express.response, next) => {
-    // ! bearer token
+    // // ! bearer token
     // const bearerToken = req.header('Authorization');
+    // console.log(bearerToken)
     // if (bearerToken) {
     //     try {
     //         const token = bearerToken.split(' ')[1];
