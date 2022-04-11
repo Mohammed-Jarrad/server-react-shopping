@@ -80,9 +80,10 @@ module.exports.createProduct = async (req = express.request, res = express.respo
         const uploadedImage = await cloudinary.uploader.upload(imageUrl, {
             upload_preset: 'image_product'
         })
+        console.log(uploadedImage.secure_url)
         const product = await productService.createProduct({
             ...req.body,
-            imageUrl: uploadedImage.public_id
+            imageUrl: uploadedImage.secure_url
         });
         res.status(201).json({ product });
     } catch (e) {

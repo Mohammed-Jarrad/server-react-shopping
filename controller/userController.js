@@ -45,7 +45,7 @@ module.exports.signup = async (req = express.request, res = express.response) =>
         });
         const user = await userService.createUser({
             ...req.body,
-            user_image: uploadedImage.public_id,
+            user_image: uploadedImage.secure_url,
         });
         const token = createToken(user);
         res.status(201).json({ token, user });
@@ -89,11 +89,19 @@ module.exports.getUsers = async (req = express.request, res = express.response) 
 
 module.exports.updateUser = async (req = express.request, res = express.response) => {
     try {
-        const result = await userService.updateUser(res.locals.userID, req.body);
-        res.status(200).json(result);
+        const user_image = req.body.user_image;
+        const userImageUploaded = await cloudinary.uploader.upload(user_image, {
+            upload_preset: "image_user",
+        })
+        const user = await userService.updateUser(res.locals.userID, {
+            ...req.body,
+            user_image: userImageUploaded.secure_url,
+        });
+        const token = createToken(user);
+        res.status(200).json({ token, user });
     } catch (e) {
-        const err = `Failed to update this User with id: ${res.locals.userID}, err: ${e}`;
-        res.status(400).json({ msg: err });
+        const errors = `Failed to update this User with id: ${res.locals.userID}, err: ${e}`;
+        res.status(400).json({ errors });
     }
 };
 
