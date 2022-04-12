@@ -1,34 +1,21 @@
-const User = require("../models/userModel");
+const User = require('../models/userModel');
 
-class UserService {
-  createUser = async (userData) => {
-    return await User.create(userData);
-  };
+module.exports.createUser = async userData => await User.create(userData);
 
-  getUsres = async () => {
-    return await User.find();
-  };
+module.exports.getUsres = async () => await User.find();
 
-  findUser = async (_id) => {
-    return await User.findById({ _id });
-  };
+module.exports.findUser = async _id => await User.findById({ _id });
 
-  updateUser = async (id, newInformation) => {
-    return await User.findByIdAndUpdate(id, newInformation, { new: true });
-  };
+module.exports.updateUser = async (id, newInformation) =>
+	await User.findByIdAndUpdate(id, newInformation, { new: true });
 
-  deleteUser = async (_id) => {
-    return await User.deleteOne({ _id });
-  };
+module.exports.deleteUser = async _id => await User.deleteOne({ _id });
 
-  changePasswordForUser = async (id, newPassword) => {
-    return await User.findByIdAndUpdate(id, { password: newPassword }, { new: true });
-  };
+module.exports.changePasswordForUser = async (id, newPassword) => {
+	return await User.findByIdAndUpdate({ _id: id }, { password: newPassword }, { new: true });
+};
 
-  login = async (email, password) => {
-    return await User.login(email, password);
-  };
+module.exports.login = async (email, password) => await User.login(email, password);
 
-}
-
-module.exports = UserService;
+module.exports.comparePassword = async (enterPassword, id) =>
+	await User.comparePassword(enterPassword, id);
