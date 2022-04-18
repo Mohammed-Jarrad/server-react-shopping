@@ -33,11 +33,11 @@ const handleLoginErrors = err => {
 	let errors = {};
 	// incorrect email
 	if (err.message.includes('Incorrect Email')) {
-		errors['email'] = 'your email is not found';
+		errors['email'] = 'email is not found';
 	}
 	// incorrect pasword
 	if (err.message.includes('Incorrect Password')) {
-		errors['password'] = 'your password is incorrect';
+		errors['password'] = 'incorrect password';
 	}
 	return errors;
 };
