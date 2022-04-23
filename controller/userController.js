@@ -137,8 +137,8 @@ module.exports.deleteUser = async (req = express.request, res = express.response
 	try {
 		const result = await userService.deleteUser(res.locals.userID);
 		result.deletedCount != 0
-			? res.status(202).send('deleted Success')
-			: res.status(400).json(`Failed to delete User`);
+			? res.status(202).json({ msg: 'deleted Success', result })
+			: res.status(400).json({ msg: 'Failed to delete User', result });
 	} catch (e) {
 		const errors = `Failed to delete this User with id: ${res.locals.userID}, err: ${e}`;
 		res.status(400).json({ errors });
@@ -159,10 +159,7 @@ module.exports.changePassword = async (req = express.request, res = express.resp
 
 module.exports.comparePassword = async (req = express.request, res = express.response) => {
 	try {
-		const compare = await userService.comparePassword(
-			req.body.enterPassword,
-			res.locals.userID,
-		);
+		const compare = await userService.comparePassword(req.body.enterPassword, res.locals.userID);
 		if (compare) {
 			return res.status(200).json({ compare });
 		} else return res.status(200).json({ msg: 'not same passwords' });

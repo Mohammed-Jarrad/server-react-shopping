@@ -65,6 +65,16 @@ module.exports.deleteOrderWhenProductDeleted = async (req = express.request, res
 	}
 };
 
+module.exports.deleteProductFromOrder = async (req = express.request, res = express.response) => {
+	try {
+		const result = await OrderService.deleteProductFromOrder(req.params.order_id);
+		res.status(200).json({ order: result });
+	} catch (e) {
+		const errors = `Faild to delete product from order with Id ${req.params.order_id}, error: ${e.message}`;
+		res.status(400).json({ errors });
+	}
+};
+
 module.exports.updateOrder = async (req = express.request, res = express.response) => {
 	try {
 		const order = await OrderService.updateById(req.params.id, req.body);

@@ -5,26 +5,26 @@ const model = mongoose.model;
 const productSchema = new Schema({
 	title: {
 		type: String,
-		required: [true, 'Set Product Title'],
+		required: [true, 'required, please set product title'],
 	},
 	imageUrl: {
 		type: String,
-		required: [true, 'Set Product Image'],
+		required: [true, 'required, please set product image'],
 	},
 	desc: {
 		type: String,
-		required: [true, 'Set Product Description'],
+		required: [true, 'required, please set product description'],
 	},
 	price: {
 		type: Number,
-		required: [true, 'Set Product Price'],
+		required: [true, 'required, please set product price'],
 	},
 	sizes: {
 		type: [String],
 	},
 	category: {
 		type: String,
-		required: [true, 'Set Product Category'],
+		required: [true, 'required, pleast set product category'],
 		lowercase: true,
 	},
 });

@@ -40,6 +40,20 @@ module.exports.deleteOrderWhenProductDeleted = async product_id => {
 	});
 };
 
+module.exports.deleteProductFromOrder = async product_id => {
+	return await Order.findOneAndUpdate(
+		{
+			'order_info.product': product_id,
+		},
+		{
+			$pull: {
+				order_info: { product: product_id },
+			},
+		},
+		{ new: true },
+	);
+};
+
 module.exports.getOrdersForUser = async user => {
 	return await Order.find({ user })
 		.populate('user')
