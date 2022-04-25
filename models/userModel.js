@@ -46,12 +46,14 @@ const userSchema = new mongoose.Schema({
 	},
 });
 
+// hashing password pre save
 userSchema.pre('save', async function (next) {
 	let salt = await bcrypt.genSalt();
 	this.password = await bcrypt.hash(this.password, salt);
 	next();
 });
 
+// check if user found or not
 userSchema.statics.login = async function (email, password) {
 	const isUser = await this.findOne({ email: email });
 	if (isUser) {
@@ -66,6 +68,7 @@ userSchema.statics.login = async function (email, password) {
 	}
 };
 
+// compare with enterPassword and original password
 userSchema.statics.comparePassword = async function (enterPassword, _id) {
 	const user = await User.findById({ _id });
 	console.log({ user });

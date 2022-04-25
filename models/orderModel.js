@@ -21,6 +21,11 @@ const orderSchema = new Schema(
 					type: Number,
 					required: true,
 				},
+				selected_size: String,
+				selected_color: {
+					type: String,
+					required: true,
+				},
 			},
 		],
 	},

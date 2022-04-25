@@ -34,24 +34,42 @@ module.exports.deleteOrder = async _id => {
 	return await Order.deleteOne({ _id });
 };
 
-module.exports.deleteOrderWhenProductDeleted = async product_id => {
-	return await Order.deleteMany({
-		'order_info.product': product_id,
-	});
-};
+// module.exports.deleteOrderWhenProductDeleted = async product_id => {
+// 	return await Order.deleteMany({
+// 		'order_info.product': product_id,
+// 	});
+// };
 
-module.exports.deleteProductFromOrder = async product_id => {
+module.exports.deleteProductFromOrder = async (product_id, color, size) => {
 	return await Order.findOneAndUpdate(
 		{
 			'order_info.product': product_id,
+			'order_info.selected_size': size,
+			'order_info.selected_color': color,
 		},
 		{
 			$pull: {
-				order_info: { product: product_id },
+				order_info: {
+					product: product_id,
+					selected_size: size,
+					selected_color: color,
+				},
 			},
 		},
 		{ new: true },
 	);
+};
+
+module.exports.deleteProductsFromOrders = async product_id => {
+	return await Order.updateMany(
+		{ 'order_info.product': product_id },
+		{ $pull: { order_info: { product: product_id } } },
+		{ new: true },
+	);
+};
+
+module.exports.deleteAllOrdersWithoutProducts = async _ => {
+	return await Order.deleteMany({ order_info: [] });
 };
 
 module.exports.getOrdersForUser = async user => {

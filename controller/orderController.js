@@ -33,7 +33,10 @@ module.exports.getOrdersForUser = async (req = express.request, res = express.re
 
 module.exports.createOrder = async (req = express.request, res = express.response) => {
 	try {
-		const order = await OrderService.createOrder({ ...req.body, user: res.locals.userID });
+		const order = await OrderService.createOrder({
+			...req.body,
+			user: res.locals.userID,
+		});
 		res.status(201).json({ order });
 	} catch (e) {
 		const errors = `faild to create a new Order, err" ${e.message}`;
@@ -53,25 +56,39 @@ module.exports.deleteOrder = async (req = express.request, res = express.respons
 	}
 };
 
-module.exports.deleteOrderWhenProductDeleted = async (req = express.request, res = express.response) => {
+module.exports.deleteProductFromOrder = async (req = express.request, res = express.response) => {
 	try {
-		const result = await OrderService.deleteOrderWhenProductDeleted(req.params.id);
-		result.deletedCount != 0
-			? res.status(202).json('Deleted Success')
-			: res.status(202).json('No orders with the same Product id');
+		let size = req.body.size;
+		let color = req.body.color;
+		let id = req.params.id;
+		const result = await OrderService.deleteProductFromOrder(id, color, size);
+		res.status(200).json({ order: result });
 	} catch (e) {
-		const errors = `Faild to delete Order with Product Id ${req.params.id}, error: ${e.message}`;
+		const errors = `Faild to delete product from order with Id ${req.params.id}, error: ${e.message}`;
 		res.status(400).json({ errors });
 	}
 };
 
-module.exports.deleteProductFromOrder = async (req = express.request, res = express.response) => {
+module.exports.deleteProductsFromOrders = async (req = express.request, res = express.response) => {
 	try {
-		const result = await OrderService.deleteProductFromOrder(req.params.order_id);
-		res.status(200).json({ order: result });
+		const result = await OrderService.deleteProductsFromOrders(req.params.product_id);
+		res.status(200).json({ msg: `${result.modifiedCount} Orders was updated successfully` });
 	} catch (e) {
-		const errors = `Faild to delete product from order with Id ${req.params.order_id}, error: ${e.message}`;
+		const errors = `Faild to delete product from all orders with Id ${req.params.product_id}, error: ${e.message}`;
 		res.status(400).json({ errors });
+	}
+};
+
+module.exports.deleteAllOrdersWithoutProducts = async (req = express.request, res = express.response) => {
+	try {
+		const result = await OrderService.deleteAllOrdersWithoutProducts();
+		// if (result.deletedCount !== 0) {
+		// 	res.status(400)
+		// }
+		res.json({ result });
+	} catch (err) {
+		const errors = `No Orders haven't Products , err: ${err}`;
+		res.status(400).send({ errors });
 	}
 };
 
@@ -84,3 +101,15 @@ module.exports.updateOrder = async (req = express.request, res = express.respons
 		res.status(404).json({ errors });
 	}
 };
+
+// module.exports.deleteOrderWhenProductDeleted = async (req = express.request, res = express.response) => {
+// 	try {
+// 		const result = await OrderService.deleteOrderWhenProductDeleted(req.params.id);
+// 		result.deletedCount != 0
+// 			? res.status(202).json('Deleted Success')
+// 			: res.status(202).json('No orders with the same Product id');
+// 	} catch (e) {
+// 		const errors = `Faild to delete Order with Product Id ${req.params.id}, error: ${e.message}`;
+// 		res.status(400).json({ errors });
+// 	}
+// };

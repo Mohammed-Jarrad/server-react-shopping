@@ -22,6 +22,10 @@ const productSchema = new Schema({
 	sizes: {
 		type: [String],
 	},
+	colors: {
+		type: [String],
+		validate: [v => Array.isArray(v) && v.length > 0, 'required, please set product colors'],
+	},
 	category: {
 		type: String,
 		required: [true, 'required, pleast set product category'],

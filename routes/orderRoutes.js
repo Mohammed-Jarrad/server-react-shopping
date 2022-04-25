@@ -10,7 +10,10 @@ router.get('/order/:id', authRequest, orderController.findOrder); // done
 router.post('/order', authRequest, orderController.createOrder); // done
 router.delete('/order/:id', authRequest, orderController.deleteOrder); // done
 router.put('/order/:id', authRequest, orderController.updateOrder); // done
-router.delete('/order/product/:id', authRequest, orderController.deleteOrderWhenProductDeleted); // done
-router.put('/order/remove-product/:order_id', authRequest, orderController.deleteProductFromOrder);
+router.put('/order/remove-product/:id', authRequest, orderController.deleteProductFromOrder); //  done
+// router.put('/order/remove-product/:id/:color/:size', authRequest, orderController.deleteProductFromOrder); //  done
+router.put('/orders/remove-product/:product_id', authRequest, orderController.deleteProductsFromOrders); //  done
+router.delete('/orders/remove-empty-orders', authRequest, orderController.deleteAllOrdersWithoutProducts); //  done
+// router.delete('/order/product/:id', authRequest, orderController.deleteOrderWhenProductDeleted); // done
 
 module.exports = router;

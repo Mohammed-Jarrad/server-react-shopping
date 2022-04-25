@@ -37,6 +37,24 @@ module.exports.getProducts = async (req = express.request, res = express.respons
 	}
 };
 
+module.exports.getSizes = async (req = express.request, res = express.response) => {
+	try {
+		const products = await ProductService.getProducts();
+		// const sizes = [...products].filter(pro => pro.sizes.length);
+		let sizes = [];
+		products.forEach(product => {
+			Object.values(product.sizes).forEach(size => sizes.push(size));
+		});
+		const sizesWithoutDuplicate = sizes.filter((size, index, arr) => {
+			return arr.indexOf(size) === index;
+		});
+		res.status(200).json({ sizes: sizesWithoutDuplicate });
+	} catch (err) {
+		const errors = `Failed to get all sizes, err: ${err}`;
+		res.status(400).json({ errors });
+	}
+};
+
 module.exports.findProduct = async (req = express.request, res = express.response) => {
 	try {
 		const product = await ProductService.findProduct(req.params.id);
