@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/userController');
-const { authRequest } = require('../Middleware/authMiddleware');
+const {authRequest} = require('../Middleware/authMiddleware');
 
 // without auth requests
 router.post('/signup', userController.signup); // done
@@ -12,7 +12,8 @@ router.get('/users', authRequest, userController.getUsers); // done
 router.put('/user', authRequest, userController.updateUser); // done
 router.put('/user/reset/password', authRequest, userController.changePassword); // done
 router.post('/user/compare/password', authRequest, userController.comparePassword);
-router.delete('/user', authRequest, userController.deleteUser); // done
+router.delete('/user', authRequest, userController.deleteAccount); // done
+router.delete('/user/:id', authRequest, userController.removeUser); // done
 router.get('/user', authRequest, userController.findUser); // done
 
 module.exports = router;

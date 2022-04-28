@@ -34,12 +34,6 @@ module.exports.deleteOrder = async _id => {
 	return await Order.deleteOne({ _id });
 };
 
-// module.exports.deleteOrderWhenProductDeleted = async product_id => {
-// 	return await Order.deleteMany({
-// 		'order_info.product': product_id,
-// 	});
-// };
-
 module.exports.deleteProductFromOrder = async (product_id, color, size) => {
 	return await Order.findOneAndUpdate(
 		{

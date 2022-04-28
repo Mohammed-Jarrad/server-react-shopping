@@ -10,6 +10,6 @@ router.put('/product/:id', authRequest, productController.updateProduct);
 router.post('/product', authRequest, productController.createProduct); // done
 router.delete('/product/:id', authRequest, productController.deleteProduct); // done
 router.get('/categories', authRequest, productController.getAllCategories); // done
-router.get('/sizes', authRequest, productController.getSizes); // done
+router.get('/sizes-colors', authRequest, productController.getSizesAndColors); // done
 
 module.exports = router;

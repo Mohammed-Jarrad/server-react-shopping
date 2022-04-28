@@ -37,18 +37,22 @@ module.exports.getProducts = async (req = express.request, res = express.respons
 	}
 };
 
-module.exports.getSizes = async (req = express.request, res = express.response) => {
+module.exports.getSizesAndColors = async (req = express.request, res = express.response) => {
 	try {
 		const products = await ProductService.getProducts();
-		// const sizes = [...products].filter(pro => pro.sizes.length);
 		let sizes = [];
+		let colors = [];
 		products.forEach(product => {
 			Object.values(product.sizes).forEach(size => sizes.push(size));
+			Object.values(product.colors).forEach(color => colors.push(color));
 		});
 		const sizesWithoutDuplicate = sizes.filter((size, index, arr) => {
 			return arr.indexOf(size) === index;
 		});
-		res.status(200).json({ sizes: sizesWithoutDuplicate });
+		const colorsWithoutDuplicate = colors.filter((color, index, arr) => {
+			return arr.indexOf(color) === index;
+		});
+		res.status(200).json({ sizes: sizesWithoutDuplicate, colors: colorsWithoutDuplicate });
 	} catch (err) {
 		const errors = `Failed to get all sizes, err: ${err}`;
 		res.status(400).json({ errors });

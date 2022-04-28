@@ -9,19 +9,23 @@ module.exports.getUsres = async () => {
 };
 
 module.exports.findUser = async _id => {
-	return await User.findById({ _id });
+	return await User.findById({_id});
 };
 
 module.exports.updateUser = async (id, newInformation) => {
-	return await User.findByIdAndUpdate(id, newInformation, { new: true });
+	return await User.findByIdAndUpdate(id, newInformation, {new: true});
 };
 
-module.exports.deleteUser = async _id => {
-	return await User.deleteOne({ _id });
+module.exports.deleteAccount = async _id => {
+	return await User.deleteOne({_id});
+};
+
+module.exports.removeUser = async _id => {
+	return await User.deleteOne({_id});
 };
 
 module.exports.changePasswordForUser = async (id, newPassword) => {
-	return await User.findByIdAndUpdate({ _id: id }, { password: newPassword }, { new: true });
+	return await User.findByIdAndUpdate({_id: id}, {password: newPassword}, {new: true});
 };
 
 module.exports.login = async (email, password) => {

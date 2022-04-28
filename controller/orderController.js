@@ -82,9 +82,6 @@ module.exports.deleteProductsFromOrders = async (req = express.request, res = ex
 module.exports.deleteAllOrdersWithoutProducts = async (req = express.request, res = express.response) => {
 	try {
 		const result = await OrderService.deleteAllOrdersWithoutProducts();
-		// if (result.deletedCount !== 0) {
-		// 	res.status(400)
-		// }
 		res.json({ result });
 	} catch (err) {
 		const errors = `No Orders haven't Products , err: ${err}`;

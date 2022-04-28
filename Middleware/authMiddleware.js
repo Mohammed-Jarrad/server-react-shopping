@@ -10,7 +10,7 @@ module.exports.authRequest = (req = express.request, res = express.response, nex
 			res.locals.userID = DECODE_JWT.user._id;
 			return next();
 		} catch (e) {
-			return res.status(401).json({ errors: e });
+			return res.status(401).json({errors: 'the token not valid !'});
 		}
 	} else res.status(401).json(`The Token is Not Found`);
 

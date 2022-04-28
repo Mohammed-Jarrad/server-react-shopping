@@ -71,7 +71,6 @@ userSchema.statics.login = async function (email, password) {
 // compare with enterPassword and original password
 userSchema.statics.comparePassword = async function (enterPassword, _id) {
 	const user = await User.findById({ _id });
-	console.log({ user });
 	const auth = await bcrypt.compare(enterPassword, user.password);
 	if (auth) {
 		return user;
