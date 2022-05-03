@@ -1,3 +1,4 @@
+const Order = require('../models/orderModel');
 const User = require('../models/userModel');
 
 module.exports.createUser = async userData => {
@@ -17,10 +18,12 @@ module.exports.updateUser = async (id, newInformation) => {
 };
 
 module.exports.deleteAccount = async _id => {
+	await Order.deleteMany({user: _id});
 	return await User.deleteOne({_id});
 };
 
 module.exports.removeUser = async _id => {
+	await Order.deleteMany({user: _id});
 	return await User.deleteOne({_id});
 };
 

@@ -94,7 +94,7 @@ module.exports.login = async (req = express.request, res = express.response) => 
 
 module.exports.logout = async (req = express.request, res = express.response) => {
 	try {
-		res.status(200).json({msg: 'Log out Seccess'});
+		res.status(200).json({msg: 'Log out Success'});
 	} catch (e) {
 		res.status(400).json({errors: e.message});
 	}
@@ -136,9 +136,9 @@ module.exports.updateUser = async (req = express.request, res = express.response
 module.exports.deleteAccount = async (req = express.request, res = express.response) => {
 	try {
 		const result = await userService.deleteAccount(res.locals.userID);
-		result.deletedCount != 0
-			? res.status(202).json({msg: 'deleted Success', result})
-			: res.status(400).json({msg: 'Failed to delete User', result});
+		result.deletedCount !== 0
+			? res.status(200).json({msg: 'Deleted Success', result})
+			: res.status(400).json({msg: 'Deleted Failed', result});
 	} catch (e) {
 		const errors = `Failed to delete this User with id: ${res.locals.userID}, err: ${e}`;
 		res.status(400).json({errors});
@@ -148,9 +148,9 @@ module.exports.deleteAccount = async (req = express.request, res = express.respo
 module.exports.removeUser = async (req = express.request, res = express.response) => {
 	try {
 		const result = await userService.removeUser(req.params.id);
-		result.deletedCount != 0
-			? res.status(202).json({msg: 'deleted Success', result})
-			: res.status(400).json({msg: 'Failed to delete User', result});
+		result.deletedCount !== 0
+			? res.status(200).json({msg: 'Deleted Success', result})
+			: res.status(400).json({msg: 'Deleted Failed', result});
 	} catch (e) {
 		const errors = `Failed to delete this User with id: ${req.params.id}, err: ${e}`;
 		res.status(400).json({errors});
@@ -179,7 +179,7 @@ module.exports.comparePassword = async (req = express.request, res = express.res
 	}
 };
 
-module.exports.findUser = async (req = express.request, res = express.response) => {
+module.exports.findUser = async (res = express.response) => {
 	try {
 		const user = await userService.findUser(res.locals.userID);
 		res.status(200).json({user});

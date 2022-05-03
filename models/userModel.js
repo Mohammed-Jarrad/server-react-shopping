@@ -3,6 +3,7 @@ const validator = require('validator');
 const isEmail = validator.default.isEmail;
 const bcrypt = require('bcrypt');
 const express = require('express');
+const Order = require('./orderModel');
 
 const userSchema = new mongoose.Schema({
 	name: {
@@ -55,7 +56,7 @@ userSchema.pre('save', async function (next) {
 
 // check if user found or not
 userSchema.statics.login = async function (email, password) {
-	const isUser = await this.findOne({ email: email });
+	const isUser = await this.findOne({email});
 	if (isUser) {
 		const auth = await bcrypt.compare(password, isUser.password);
 		if (auth) {
@@ -70,7 +71,7 @@ userSchema.statics.login = async function (email, password) {
 
 // compare with enterPassword and original password
 userSchema.statics.comparePassword = async function (enterPassword, _id) {
-	const user = await User.findById({ _id });
+	const user = await User.findById({_id});
 	const auth = await bcrypt.compare(enterPassword, user.password);
 	if (auth) {
 		return user;
@@ -78,6 +79,15 @@ userSchema.statics.comparePassword = async function (enterPassword, _id) {
 		throw Error('this is incorrect password');
 	}
 };
+
+userSchema.post('remove', async function (doc) {
+	const userId = doc._id;
+
+	const orders = await Order.find({user: userId});
+	orders.map(async order => {
+		await Order.deleteOne({_id: order._id});
+	});
+});
 
 const User = mongoose.model('User', userSchema);
 

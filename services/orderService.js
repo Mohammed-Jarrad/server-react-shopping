@@ -23,7 +23,7 @@ module.exports.findById = async id => {
 };
 
 module.exports.updateById = async (id, newOrder) => {
-	return await Order.findByIdAndUpdate(id, newOrder, { new: true }).populate('user');
+	return await Order.findByIdAndUpdate(id, newOrder, {new: true}).populate('user');
 };
 
 module.exports.createOrder = async newOrder => {
@@ -31,7 +31,7 @@ module.exports.createOrder = async newOrder => {
 };
 
 module.exports.deleteOrder = async _id => {
-	return await Order.deleteOne({ _id });
+	return await Order.deleteOne({_id});
 };
 
 module.exports.deleteProductFromOrder = async (product_id, color, size) => {
@@ -50,24 +50,24 @@ module.exports.deleteProductFromOrder = async (product_id, color, size) => {
 				},
 			},
 		},
-		{ new: true },
+		{new: true},
 	);
 };
 
 module.exports.deleteProductsFromOrders = async product_id => {
 	return await Order.updateMany(
-		{ 'order_info.product': product_id },
-		{ $pull: { order_info: { product: product_id } } },
-		{ new: true },
+		{'order_info.product': product_id},
+		{$pull: {order_info: {product: product_id}}},
+		{new: true},
 	);
 };
 
 module.exports.deleteAllOrdersWithoutProducts = async _ => {
-	return await Order.deleteMany({ order_info: [] });
+	return await Order.deleteMany({order_info: []});
 };
 
 module.exports.getOrdersForUser = async user => {
-	return await Order.find({ user })
+	return await Order.find({user})
 		.populate('user')
 		.populate({
 			path: 'order_info',
