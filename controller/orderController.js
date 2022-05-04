@@ -1,6 +1,18 @@
 const express = require('express');
 const OrderService = require('../services/orderService');
 
+const handleCreateErrors = e => {
+	let errors = {};
+
+	if (e.name === 'ValidationError') {
+		Object.values(e.errors).forEach(({path, message}) => {
+			errors[path] = message;
+		});
+	}
+
+	return errors;
+};
+
 module.exports.getOrders = async (req = express.request, res = express.response) => {
 	try {
 		const orders = await OrderService.getOrders();
@@ -39,8 +51,9 @@ module.exports.createOrder = async (req = express.request, res = express.respons
 		});
 		res.status(201).json({order});
 	} catch (e) {
-		const errors = `faild to create a new Order, err" ${e.message}`;
+		const errors = handleCreateErrors(e);
 		res.status(400).json({errors});
+		console.log(errors);
 	}
 };
 

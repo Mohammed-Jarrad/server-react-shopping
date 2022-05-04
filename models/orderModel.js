@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { required } = require('nodemon/lib/config');
+const {required} = require('nodemon/lib/config');
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
@@ -9,6 +9,11 @@ const orderSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'User',
 			required: true,
+		},
+		location: {
+			city: {type: String, required: [true, 'Required']},
+			country: {type: String, required: [true, 'Required']},
+			address: {type: String, required: [true, 'Required']},
 		},
 		order_info: [
 			{
