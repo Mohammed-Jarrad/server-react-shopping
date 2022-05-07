@@ -1,16 +1,16 @@
-const Order = require('../models/orderModel');
-const User = require('../models/userModel');
+const Order = require("../models/orderModel");
+const User = require("../models/userModel");
 
 module.exports.createUser = async userData => {
 	return await User.create(userData);
 };
 
-module.exports.getUsres = async () => {
+module.exports.getUsers = async () => {
 	return await User.find();
 };
 
 module.exports.findUser = async _id => {
-	return await User.findById({_id});
+	return await User.findById(_id);
 };
 
 module.exports.updateUser = async (id, newInformation) => {

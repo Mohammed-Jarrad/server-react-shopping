@@ -24,12 +24,20 @@ const productSchema = new Schema({
 	},
 	colors: {
 		type: [String],
-		validate: [v => Array.isArray(v) && v.length > 0, 'required, please set product colors'],
+		// validate: [v => Array.isArray(v) && v.length > 0, 'required, please set product colors'],
 	},
 	category: {
 		type: String,
-		required: [true, 'required, pleast set product category'],
+		required: [true, 'required, please set product category'],
 		lowercase: true,
+	},
+	countInStock: {
+		type: Number,
+		required: [true, 'required, please set product Count'],
+	},
+	discount: {
+		type: Number,
+		default: 0,
 	},
 });
 

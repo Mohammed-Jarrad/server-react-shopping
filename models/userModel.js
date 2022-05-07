@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const isEmail = validator.default.isEmail;
 const bcrypt = require('bcrypt');
-const express = require('express');
 const Order = require('./orderModel');
 
 const userSchema = new mongoose.Schema({

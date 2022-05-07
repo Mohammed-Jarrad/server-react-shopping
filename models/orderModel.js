@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const {required} = require('nodemon/lib/config');
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
@@ -27,10 +26,7 @@ const orderSchema = new Schema(
 					required: true,
 				},
 				selected_size: String,
-				selected_color: {
-					type: String,
-					required: true,
-				},
+				selected_color: String,
 			},
 		],
 	},
