@@ -1,29 +1,29 @@
-const Order = require('../models/orderModel');
+const Order = require("../models/orderModel");
 
 module.exports.getOrders = async () => {
 	return await Order.find()
-		.populate('user')
+		.populate("user")
 		.populate({
-			path: 'order_info',
+			path: "order_info",
 			populate: {
-				path: 'product',
+				path: "product",
 			},
 		});
 };
 
 module.exports.findById = async id => {
 	return await Order.findById(id)
-		.populate('user')
+		.populate("user")
 		.populate({
-			path: 'order_info',
+			path: "order_info",
 			populate: {
-				path: 'product',
+				path: "product",
 			},
 		});
 };
 
 module.exports.updateById = async (id, newOrder) => {
-	return await Order.findByIdAndUpdate(id, newOrder, {new: true}).populate('user');
+	return await Order.findByIdAndUpdate(id, newOrder, { new: true }).populate("user");
 };
 
 module.exports.createOrder = async newOrder => {
@@ -31,15 +31,15 @@ module.exports.createOrder = async newOrder => {
 };
 
 module.exports.deleteOrder = async _id => {
-	return await Order.deleteOne({_id});
+	return await Order.deleteOne({ _id });
 };
 
 module.exports.deleteProductFromOrder = async (product_id, color, size) => {
 	return await Order.findOneAndUpdate(
 		{
-			'order_info.product': product_id,
-			'order_info.selected_size': size,
-			'order_info.selected_color': color,
+			"order_info.product": product_id,
+			"order_info.selected_size": size,
+			"order_info.selected_color": color,
 		},
 		{
 			$pull: {
@@ -50,29 +50,55 @@ module.exports.deleteProductFromOrder = async (product_id, color, size) => {
 				},
 			},
 		},
-		{new: true},
+		{ new: true },
 	);
 };
 
 module.exports.deleteProductsFromOrders = async product_id => {
 	return await Order.updateMany(
-		{'order_info.product': product_id},
-		{$pull: {order_info: {product: product_id}}},
-		{new: true},
+		{ "order_info.product": product_id },
+		{ $pull: { order_info: { product: product_id } } },
+		{ new: true },
 	);
 };
 
 module.exports.deleteAllOrdersWithoutProducts = async _ => {
-	return await Order.deleteMany({order_info: []});
+	return await Order.deleteMany({ order_info: [] });
 };
 
 module.exports.getOrdersForUser = async user => {
-	return await Order.find({user})
-		.populate('user')
+	return await Order.find({ user })
+		.populate("user")
 		.populate({
-			path: 'order_info',
+			path: "order_info",
 			populate: {
-				path: 'product',
+				path: "product",
 			},
 		});
+};
+
+module.exports.getOrdersForUserByStatus = async (status, user) => {
+	return await Order.find({ status, user })
+		.populate("user")
+		.populate({
+			path: "order_info",
+			populate: {
+				path: "product",
+			},
+		});
+};
+
+module.exports.getAllOrdersByStatus = async status => {
+	return await Order.find({ status })
+		.populate("user")
+		.populate({
+			path: "order_info",
+			populate: {
+				path: "product",
+			},
+		});
+};
+
+module.exports.changeOrderStatus = async (_id, state) => {
+	return await Order.updateOne({ _id }, { state: state }, { new: true });
 };
