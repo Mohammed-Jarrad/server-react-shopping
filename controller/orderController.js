@@ -141,13 +141,3 @@ module.exports.getAllOrdersByStatus = async (req = express.request, res = expres
 		res.status(400).json({ errors });
 	}
 };
-
-module.exports.changeOrderStatus = async (req = express.request, res = express.response) => {
-	try {
-		const order = await OrderService.changeOrderStatus(req.params.id, req.body.status);
-		res.status(200).json({ order });
-	} catch (e) {
-		const errors = `faild to Change Status to ${req.body.status}, err" ${e.message}`;
-		res.status(400).json({ errors });
-	}
-};

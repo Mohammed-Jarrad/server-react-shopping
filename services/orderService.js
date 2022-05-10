@@ -98,7 +98,3 @@ module.exports.getAllOrdersByStatus = async status => {
 			},
 		});
 };
-
-module.exports.changeOrderStatus = async (id, newStatus) => {
-	return await Order.updateOne({ _id: id }, { status: newStatus }, { new: true });
-};
