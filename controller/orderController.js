@@ -1,10 +1,10 @@
-const express = require("express");
-const OrderService = require("../services/orderService");
+const express = require('express');
+const OrderService = require('../services/orderService');
 
 const handleCreateErrors = e => {
 	let errors = {};
 
-	if (e.name === "ValidationError") {
+	if (e.name === 'ValidationError') {
 		Object.values(e.errors).forEach(({ path, message }) => {
 			errors[path] = message;
 		});
@@ -61,8 +61,8 @@ module.exports.deleteOrder = async (req = express.request, res = express.respons
 	try {
 		const result = await OrderService.deleteOrder(req.params.id);
 		result.deletedCount != 0
-			? res.status(202).json("Deleted Success")
-			: res.status(400).json("Faild to delete the Order");
+			? res.status(202).json('Deleted Success')
+			: res.status(400).json('Faild to delete the Order');
 	} catch (e) {
 		const errors = `Faild to delete Order with Id ${req.params.id}, error: ${e.message}`;
 		res.status(400).json({ errors });
@@ -79,26 +79,6 @@ module.exports.deleteProductFromOrder = async (req = express.request, res = expr
 	} catch (e) {
 		const errors = `Faild to delete product from order with Id ${req.params.id}, error: ${e.message}`;
 		res.status(400).json({ errors });
-	}
-};
-
-module.exports.deleteProductsFromOrders = async (req = express.request, res = express.response) => {
-	try {
-		const result = await OrderService.deleteProductsFromOrders(req.params.product_id);
-		res.status(200).json({ msg: `${result.modifiedCount} Orders was updated successfully` });
-	} catch (e) {
-		const errors = `Faild to delete product from all orders with Id ${req.params.product_id}, error: ${e.message}`;
-		res.status(400).json({ errors });
-	}
-};
-
-module.exports.deleteAllOrdersWithoutProducts = async (req = express.request, res = express.response) => {
-	try {
-		const result = await OrderService.deleteAllOrdersWithoutProducts();
-		res.json({ result });
-	} catch (err) {
-		const errors = `No Orders haven't Products , err: ${err}`;
-		res.status(400).send({ errors });
 	}
 };
 

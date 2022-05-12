@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controller/productController');
-const {authRequest} = require('../Middleware/authMiddleware');
+const { authRequest } = require('../Middleware/authMiddleware');
 
 // without Auth
 router.get('/products', productController.getProducts); // done
@@ -11,6 +11,8 @@ router.get('/categories', productController.getAllCategories); // done
 router.get('/sizes-colors', productController.getSizesAndColors); // done
 // with Auth
 router.put('/product/:id', authRequest, productController.updateProduct);
+router.put('/product/review/:id', authRequest, productController.updateProductReviews);
+router.put('/product/delete/review/:id', authRequest, productController.deleteReviewFromProduct);
 router.post('/product', authRequest, productController.createProduct); // done
 router.delete('/product/:id', authRequest, productController.deleteProduct); // done
 

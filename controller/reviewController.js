@@ -23,16 +23,6 @@ module.exports.createReview = async (req = express.request, res = express.respon
 	}
 };
 
-module.exports.getReviewsByProduct = async (req = express.request, res = express.response) => {
-	try {
-		const reviews = await reviewService.getReviewsByProduct(req.params.id);
-		res.status(200).json({ reviews });
-	} catch (e) {
-		const errors = `Failed to get all Reviews for product with id: ${req.params.id}, err: ${e}`;
-		res.status(400).json({ errors });
-	}
-};
-
 module.exports.deleteReview = async (req = express.request, res = express.response) => {
 	try {
 		const result = await reviewService.deleteReview(req.params.id);
@@ -52,6 +42,17 @@ module.exports.updateReview = async (req = express.request, res = express.respon
 		res.status(200).json({ review });
 	} catch (e) {
 		const errors = `Failed to Update Review with id: ${req.params.id}, err: ${e}`;
+		res.status(400).json({ errors });
+	}
+};
+
+module.exports.getProductReviews = async (req = express.request, res = express.response) => {
+	try {
+		const reviews = await reviewService.getProductReviews(req.params.id);
+		const ratings = [...reviews].map(item => item.rating);
+		res.status(200).json({ reviews, ratings });
+	} catch (e) {
+		const errors = `Failed to Get Reviews to product with id: ${req.params.id}, err: ${e}`;
 		res.status(400).json({ errors });
 	}
 };

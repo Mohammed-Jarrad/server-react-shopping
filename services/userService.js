@@ -1,6 +1,7 @@
-const Order = require("../models/orderModel");
-const Review = require("../models/reviewModel");
-const User = require("../models/userModel");
+const Order = require('../models/orderModel');
+const Review = require('../models/reviewModel');
+const User = require('../models/userModel');
+const productService = require('./productService');
 
 module.exports.createUser = async userData => {
 	return await User.create(userData);
@@ -20,13 +21,13 @@ module.exports.updateUser = async (id, newInformation) => {
 
 module.exports.deleteAccount = async _id => {
 	await Order.deleteMany({ user: _id });
-	await Review.deleteMany({ user: _id });
+	await productService.deleteReviewWhenUserDeleted(_id);
 	return await User.deleteOne({ _id });
 };
 
 module.exports.removeUser = async _id => {
 	await Order.deleteMany({ user: _id });
-	await Review.deleteMany({ user: _id });
+	await productService.deleteReviewWhenUserDeleted(_id);
 	return await User.deleteOne({ _id });
 };
 
