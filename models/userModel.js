@@ -44,6 +44,7 @@ const userSchema = new mongoose.Schema({
 	user_image: {
 		type: String,
 	},
+	cloudinary_id: String,
 });
 
 // hashing password pre save
@@ -55,7 +56,7 @@ userSchema.pre('save', async function (next) {
 
 // check if user found or not
 userSchema.statics.login = async function (email, password) {
-	const isUser = await this.findOne({email});
+	const isUser = await this.findOne({ email });
 	if (isUser) {
 		const auth = await bcrypt.compare(password, isUser.password);
 		if (auth) {
@@ -70,7 +71,7 @@ userSchema.statics.login = async function (email, password) {
 
 // compare with enterPassword and original password
 userSchema.statics.comparePassword = async function (enterPassword, _id) {
-	const user = await User.findById({_id});
+	const user = await User.findById({ _id });
 	const auth = await bcrypt.compare(enterPassword, user.password);
 	if (auth) {
 		return user;
@@ -82,9 +83,9 @@ userSchema.statics.comparePassword = async function (enterPassword, _id) {
 userSchema.post('remove', async function (doc) {
 	const userId = doc._id;
 
-	const orders = await Order.find({user: userId});
+	const orders = await Order.find({ user: userId });
 	orders.map(async order => {
-		await Order.deleteOne({_id: order._id});
+		await Order.deleteOne({ _id: order._id });
 	});
 });
 

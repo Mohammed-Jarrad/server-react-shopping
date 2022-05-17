@@ -37,28 +37,6 @@ module.exports.getProducts = async (req = express.request, res = express.respons
 	}
 };
 
-module.exports.getSizesAndColors = async (req = express.request, res = express.response) => {
-	try {
-		const products = await ProductService.getProducts();
-		let sizes = [];
-		let colors = [];
-		products.forEach(product => {
-			Object.values(product.sizes).forEach(size => sizes.push(size));
-			Object.values(product.colors).forEach(color => colors.push(color));
-		});
-		const sizesWithoutDuplicate = sizes.filter((size, index, arr) => {
-			return arr.indexOf(size) === index;
-		});
-		const colorsWithoutDuplicate = colors.filter((color, index, arr) => {
-			return arr.indexOf(color) === index;
-		});
-		res.status(200).json({ sizes: sizesWithoutDuplicate, colors: colorsWithoutDuplicate });
-	} catch (err) {
-		const errors = `Failed to get all sizes, err: ${err}`;
-		res.status(400).json({ errors });
-	}
-};
-
 module.exports.findProduct = async (req = express.request, res = express.response) => {
 	try {
 		const product = await ProductService.findProduct(req.params.id);
@@ -79,26 +57,27 @@ module.exports.getProductsByCategory = async (req = express.request, res = expre
 	}
 };
 
-module.exports.getAllCategories = async (req = express.request, res = express.response) => {
-	try {
-		const products = await ProductService.getProducts();
-		const categories = products.map(product => product.category);
-		const categoriesWithoutDuplicate = categories.filter((category, index, arr) => {
-			return arr.indexOf(category) === index;
-		});
-		res.status(200).json({ categories: categoriesWithoutDuplicate });
-	} catch (e) {
-		const errors = `Faild to get All Categories For Products, error: ${e}`;
-		res.status(400).json({ errors });
-	}
-};
-
 module.exports.updateProduct = async (req = express.request, res = express.response) => {
 	try {
-		const product = await ProductService.updateProduct(req.params.id, req.body);
+		const id = req.params.id;
+		const body = req.body;
+		const oldProduct = await ProductService.findProduct(id);
+		const { cloudinary_id } = oldProduct;
+		if (cloudinary_id) {
+			await cloudinary.uploader.destroy(cloudinary_id);
+		}
+		const imageUrl = req.body.imageUrl;
+		const uploadedImage = await cloudinary.uploader.upload(imageUrl, {
+			upload_preset: 'image_product',
+		});
+		const product = await ProductService.updateProduct(id, {
+			...body,
+			cloudinary_id: uploadedImage.public_id,
+			imageUrl: uploadedImage.url,
+		});
 		res.status(200).json({ product });
 	} catch (e) {
-		const errors = `Failed to Update Product with id ${req.params.id}, err: ${e}`;
+		const errors = `Failed to Update Product with id ${id}, err: ${e}`;
 		res.status(400).json({ errors });
 	}
 };
@@ -131,8 +110,10 @@ module.exports.createProduct = async (req = express.request, res = express.respo
 		});
 		const product = await ProductService.createProduct({
 			...req.body,
-			imageUrl: uploadedImage.secure_url,
+			imageUrl: uploadedImage.url,
+			cloudinary_id: uploadedImage.public_id,
 		});
+
 		res.status(201).json({ product });
 	} catch (e) {
 		const errors = handleError(e);
@@ -143,12 +124,18 @@ module.exports.createProduct = async (req = express.request, res = express.respo
 
 module.exports.deleteProduct = async (req = express.request, res = express.response) => {
 	try {
-		const result = await ProductService.deleteProduct(req.params.id);
+		const id = req.params.id;
+		const product = await ProductService.findProduct(id);
+		const { cloudinary_id } = product;
+		if (cloudinary_id) {
+			await cloudinary.uploader.destroy(cloudinary_id);
+		}
+		const result = await ProductService.deleteProduct(id);
 		result.deletedCount != 0
 			? res.status(202).json(`Deleted Success`)
-			: res.status(400).json(`Failed to delete Product with id ${req.params.id}`);
+			: res.status(400).json(`Failed to delete Product with id ${id}`);
 	} catch (e) {
-		const errors = `Failed to Delete the Product with id: ${req.params.id}, err: ${e}`;
+		const errors = `Failed to Delete the Product with id: ${id}, err: ${e}`;
 		res.status(400).json({ errors });
 	}
 };

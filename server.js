@@ -2,8 +2,6 @@ const express = require('express');
 const productsRouter = require('./routes/productsRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const userRouter = require('./routes/userRouter');
-const cartItemRouter = require('./routes/cartItemRoutes');
-const reviewRouter = require('./routes/reviewRoutes');
 const connectDB = require('./config/db');
 require('dotenv').config();
 const cors = require('cors');
@@ -22,8 +20,6 @@ connectDB();
 app.use('/', productsRouter);
 app.use('/', orderRouter);
 app.use('/', userRouter);
-app.use('/', cartItemRouter);
-app.use('/', reviewRouter);
 
 // !Listen
 const PORT = process.env.PORT;

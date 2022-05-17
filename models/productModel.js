@@ -7,10 +7,6 @@ const productSchema = new Schema({
 		type: String,
 		required: [true, 'required, please set product title'],
 	},
-	imageUrl: {
-		type: String,
-		required: [true, 'required, please set product image'],
-	},
 	desc: {
 		type: String,
 		required: [true, 'required, please set product description'],
@@ -24,7 +20,6 @@ const productSchema = new Schema({
 	},
 	colors: {
 		type: [String],
-		// validate: [v => Array.isArray(v) && v.length > 0, 'required, please set product colors'],
 	},
 	category: {
 		type: String,
@@ -39,6 +34,11 @@ const productSchema = new Schema({
 		type: Number,
 		default: 0,
 	},
+	imageUrl: {
+		type: String,
+		required: [true, 'required, please set product image'],
+	},
+	cloudinary_id: String,
 	reviews: {
 		type: [
 			{
@@ -49,11 +49,11 @@ const productSchema = new Schema({
 				},
 				comment: {
 					type: String,
-					required: true,
+					required: [true, 'please set comment !'],
 				},
 				rating: {
 					type: String,
-					required: true,
+					required: [true, 'please set rating !'],
 				},
 				date: {
 					type: Date,

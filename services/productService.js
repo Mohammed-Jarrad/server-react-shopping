@@ -1,6 +1,5 @@
 const express = require('express');
 const Product = require('../models/productModel');
-const Review = require('../models/reviewModel');
 const orderService = require('./orderService');
 
 module.exports.getProducts = async () => {

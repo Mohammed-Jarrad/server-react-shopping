@@ -7,8 +7,6 @@ const { authRequest } = require('../Middleware/authMiddleware');
 router.get('/products', productController.getProducts); // done
 router.get('/product/:id', productController.findProduct); // done
 router.get('/products/:category', productController.getProductsByCategory); // done
-router.get('/categories', productController.getAllCategories); // done
-router.get('/sizes-colors', productController.getSizesAndColors); // done
 // with Auth
 router.put('/product/:id', authRequest, productController.updateProduct);
 router.put('/product/review/:id', authRequest, productController.updateProductReviews);

@@ -75,7 +75,10 @@ module.exports.deleteProductFromOrder = async (req = express.request, res = expr
 		let color = req.body.color;
 		let id = req.params.id;
 		const result = await OrderService.deleteProductFromOrder(id, color, size);
-		res.status(200).json({ order: result });
+		if ([...result.order_info].length === 0) {
+			var del = await OrderService.deleteOrder(result._id);
+		}
+		res.status(200).json({ order: result, del });
 	} catch (e) {
 		const errors = `Faild to delete product from order with Id ${req.params.id}, error: ${e.message}`;
 		res.status(400).json({ errors });
