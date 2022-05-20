@@ -119,34 +119,40 @@ module.exports.getUsers = async (req = express.request, res = express.response) 
 };
 
 module.exports.updateUser = async (req = express.request, res = express.response) => {
+	const id = res.locals.userID;
+	const body = req.body;
+	const oldUser = await userService.findUser(id);
+	const { cloudinary_id } = oldUser;
+	let user_image_path;
+	let public_id;
+	let user;
 	try {
-		const oldUser = await userService.findUser(res.locals.userID);
-		const { cloudinary_id } = oldUser;
-		let user_image_path;
-		let public_id;
-		if (cloudinary_id) {
-			await cloudinary.uploader.destroy(cloudinary_id);
-		}
-		if (req.body.user_image === '/images/profile-image-default.webp') {
-			user_image_path = '/images/profile-image-default.webp';
-			public_id = '';
-		} else {
-			const uploadedImage = await cloudinary.uploader.upload(req.body.user_image, {
-				upload_preset: 'image_user',
+		if (body.user_image !== oldUser.user_image) {
+			cloudinary_id && (await cloudinary.uploader.destroy(cloudinary_id));
+
+			if (body.user_image === '/images/profile-image-default.webp') {
+				user_image_path = '/images/profile-image-default.webp';
+				public_id = '';
+			} else {
+				const uploadedImage = await cloudinary.uploader.upload(body.user_image, {
+					upload_preset: 'image_user',
+				});
+				user_image_path = uploadedImage.url;
+				public_id = uploadedImage.public_id;
+			}
+			user = await userService.updateUser(id, {
+				...body,
+				user_image: user_image_path,
+				cloudinary_id: public_id,
 			});
-			user_image_path = uploadedImage.url;
-			public_id = uploadedImage.public_id;
+		} else {
+			user = await userService.updateUser(id, body);
 		}
-		const user = await userService.updateUser(res.locals.userID, {
-			...req.body,
-			user_image: user_image_path,
-			cloudinary_id: public_id,
-		});
 		const token = createToken(user);
 		res.status(200).json({ token, user });
 	} catch (err) {
-		const errors = `Failed to update this User with id: ${res.locals.userID}, err: ${err}`;
-		res.status(400).json({ err });
+		const errors = `Failed to update this User with id: ${id}, err: ${err}`;
+		res.status(400).json({ errors });
 	}
 };
 

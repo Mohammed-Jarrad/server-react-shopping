@@ -58,23 +58,29 @@ module.exports.getProductsByCategory = async (req = express.request, res = expre
 };
 
 module.exports.updateProduct = async (req = express.request, res = express.response) => {
+	const id = req.params.id;
+	const body = req.body;
+	let product;
 	try {
-		const id = req.params.id;
-		const body = req.body;
 		const oldProduct = await ProductService.findProduct(id);
-		const { cloudinary_id } = oldProduct;
-		if (cloudinary_id) {
-			await cloudinary.uploader.destroy(cloudinary_id);
+		if (body.imageUrl !== oldProduct.imageUrl) {
+			const { cloudinary_id } = oldProduct;
+			if (cloudinary_id) {
+				await cloudinary.uploader.destroy(cloudinary_id);
+			}
+			const imageUrl = body.imageUrl;
+			const uploadedImage = await cloudinary.uploader.upload(imageUrl, {
+				upload_preset: 'image_product',
+			});
+
+			product = await ProductService.updateProduct(id, {
+				...body,
+				cloudinary_id: uploadedImage.public_id,
+				imageUrl: uploadedImage.url,
+			});
+		} else {
+			product = await ProductService.updateProduct(id, body);
 		}
-		const imageUrl = req.body.imageUrl;
-		const uploadedImage = await cloudinary.uploader.upload(imageUrl, {
-			upload_preset: 'image_product',
-		});
-		const product = await ProductService.updateProduct(id, {
-			...body,
-			cloudinary_id: uploadedImage.public_id,
-			imageUrl: uploadedImage.url,
-		});
 		res.status(200).json({ product });
 	} catch (e) {
 		const errors = `Failed to Update Product with id ${id}, err: ${e}`;
