@@ -80,15 +80,6 @@ userSchema.statics.comparePassword = async function (enterPassword, _id) {
 	}
 };
 
-userSchema.post('remove', async function (doc) {
-	const userId = doc._id;
-
-	const orders = await Order.find({ user: userId });
-	orders.map(async order => {
-		await Order.deleteOne({ _id: order._id });
-	});
-});
-
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
