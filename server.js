@@ -1,28 +1,33 @@
-let express = require('express')
-let bodyParser = require('body-parser')
-const productsRouter = require('./routes/productsRoutes')
-const orderRouter = require('./routes/orderRoutes')
-const connectDB = require('./config/db')
-require('dotenv').config()
+const express = require('express');
+const productsRouter = require('./routes/productsRoutes');
+const orderRouter = require('./routes/orderRoutes');
+const userRouter = require('./routes/userRouter');
+const connectDB = require('./config/db');
+require('dotenv').config();
+const cors = require('cors');
 
-let app = express()
-app.use(bodyParser.json())
+//!config
+const app = express();
+app.use(cors());
+// for images uploaded
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Connect DB
+// !Connection Database
 connectDB();
 
-app.use('/', productsRouter)
-app.use('/', orderRouter)
+//!Routes
+app.use('/', productsRouter);
+app.use('/', orderRouter);
+app.use('/', userRouter);
 
-if(process.env.NODE_ENV === 'production') {
-    app.use('/', express.static('public'))
-    app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'))
-} else {
-    app.get('/', (req, res) => res.send('API Running'))
-}
+// !Listen
+const PORT = process.env.PORT;
+app.listen(PORT || 5002, () => console.log(`Server Running on port ${PORT}`));
 
-let PORT = process.env.PORT
-app.listen(PORT || 5002, () => {
-    console.log('Server Running on port 5002')
-})
-
+// if(process.env.NODE_ENV === 'production') {
+//     app.use('/', express.static('public'))
+//     app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'))
+// } else {
+//     app.get('/', (req, res) => res.send('API Running'))
+// }

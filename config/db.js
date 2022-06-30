@@ -1,8 +1,8 @@
-let mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
-let connectionString = 'mongodb://localhost/react-shopping-cart'
+const connectionString = 'mongodb://localhost/react-shopping-cart'
 
-let connectDB = () => {
+const connectDB = () => {
     mongoose.connect( process.env.MONGO_URI || connectionString, {
         useNewUrlParser: true,
         useUnifiedTopology: true

@@ -1,21 +1,17 @@
-let express = require('express');
-const Product = require('../models/productModel');
-let router = express.Router();
+const express = require('express');
+const router = express.Router();
+const productController = require('../controller/productController');
+const { authRequest } = require('../Middleware/authMiddleware');
 
+// without Auth
+router.get('/products', productController.getProducts); // done
+router.get('/product/:id', productController.findProduct); // done
+router.get('/products/:category', productController.getProductsByCategory); // done
+// with Auth
+router.put('/product/:id', authRequest, productController.updateProduct);
+router.put('/product/review/:id', authRequest, productController.updateProductReviews);
+router.put('/product/delete/review/:id', authRequest, productController.deleteReviewFromProduct);
+router.post('/product', authRequest, productController.createProduct); // done
+router.delete('/product/:id', authRequest, productController.deleteProduct); // done
 
-router.get('/api/products', async (req, res) => {
-    let products = await Product.find()
-    res.send(products) 
-})
-
-router.post('/api/products', async (req, res) => {
-    let newProduct = new Product(req.body).save()
-    res.send(newProduct)
-})
-
-router.delete('/api/products/:id', async (req, res) => {
-    let deletedProduct = await Product.findByIdAndDelete(req.params.id)
-    res.send(deletedProduct)
-})
-
-module.exports = router
+module.exports = router;

@@ -1,21 +1,17 @@
-let express = require('express')
-let router = express.Router()
-let Order = require('../models/orderModel')
+const express = require('express');
+const router = express.Router();
+const orderController = require('../controller/orderController');
+const { authRequest } = require('../Middleware/authMiddleware');
 
-router.get('/api/orders', async (req, res) => {
-    let order = await Order.find()
-    res.send(order)
-})
-
-router.post('/api/orders', async (req, res) => {
-    let order = await new Order(req.body).save()
-    res.send(order)
-})
-
-router.delete('/api/orders/:id', async (req, res) => {
-    let deletedOrder = await Order.findByIdAndDelete(req.params.id)
-    res.send(deletedOrder)
-})
+// router.use(authRequest)
+router.get('/orders', authRequest, orderController.getOrders); // done
+router.get('/orders/user', authRequest, orderController.getOrdersForUser); // done
+router.get('/order/:id', authRequest, orderController.findOrder); // done
+router.post('/order', authRequest, orderController.createOrder); // done
+router.delete('/order/:id', authRequest, orderController.deleteOrder); // done
+router.put('/order/:id', authRequest, orderController.updateOrder); // done
+router.put('/order/remove-product/:id', authRequest, orderController.deleteProductFromOrder); //  done
+router.post('/orders/user/status', authRequest, orderController.getOrdersForUserByStatus); //  done
+router.post('/orders/status', authRequest, orderController.getAllOrdersByStatus); //  done
 
 module.exports = router;
-
