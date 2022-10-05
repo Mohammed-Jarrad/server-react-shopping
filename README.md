@@ -6,7 +6,7 @@
 
 
 # PORT=5002
-# MONGO_URI=mongodb+srv://mohammed_jarrad:123@react.ylfdw.mongodb.net/shopping-cart
+# MONGO_URI=mongodb+srv://mohammed_jarrad:(password)@react.ylfdw.mongodb.net/shopping-cart
 # NODE_ENV=production
 # CLOUDINARY_NAME=dipbhxayl
 # CLOUDINARY_API_KEY=686814364464927
